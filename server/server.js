@@ -61,9 +61,19 @@ const getFakeUser = () => {
     email: faker.internet.email(),
     company: faker.company.companyName(),
     salary: faker.finance.amount(),
-    age: (faker.random.number() % 30) + 18
+    age: (faker.random.number() % 30) + 18,
+    phone: faker.phone.phoneNumber(),
+    internet: faker.internet.url(),
+    address: faker.address.city()
   }
 }
+
+
+server.get('/api/users', (req, res) => {
+  res.json(
+    new Array(10).fill(null).map(getFakeUser)
+  )
+});
 
 const imgdata = [
   0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00, 0x80, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
