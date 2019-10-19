@@ -11,7 +11,7 @@ import cookieParser from 'cookie-parser'
 import Html from '../client/html'
 import Variables from '../client/variables'
 
-const PAGE_SIZE = 10
+// const PAGE_SIZE = 10
 
 let connections = [];
 const clientVariables = Object.keys(process.env)
@@ -70,76 +70,94 @@ const getFakeUser = () => {
 
 
 server.get('/api/users', (req, res) => {
-  res.json(
-    new Array(10).fill(null).map(getFakeUser)
-  )
-});
-
-const imgdata = [
-  0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00, 0x80, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
-  0x00, 0x00, 0x00, 0x21, 0xf9, 0x04, 0x04, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00,
-  0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x44, 0x01, 0x00, 0x3b
-]
-const imgbuf = Buffer.from(imgdata)
-server.get('/tracker/:userId.gif', (req, res) => {
-  const { userId } = req.params
-  // <img src={`/tracker/${counter}.gif`} alt="tracker" />
-  // '/tracker'
-  const dataObj = {
-    language: req.headers['accept-language'],
-    userAgent: req.headers['user-agent'],
-    date: +(new Date()),
-    ipAddress: req.connection.remoteAddress,
-    userId
-  }
-  const fileName = `${__dirname}/logs/${userId}_${dataObj.date}.json`;
-  return fs.writeFile(
-    fileName,
-    JSON.stringify(dataObj),
-    () => {
-      res.writeHead(200, {
-        'Content-Type': 'image/gif',
-        'Content-Length': imgdata.length,
-      })
-      res.end(imgbuf)
-    }
-  )
-})
-server.get('/api/users/:pageIndex', (req, res) => {
-  const { pageIndex } = req.params
-
   const fileName = `${__dirname}/tmp/data.json`;
   fs.readFile(
     fileName,
     (err, data) => {
       if (!err) {
-        setTimeout(() => {
-          return res.json(
-            JSON.parse(data).slice(
-              +pageIndex * PAGE_SIZE,
-              (+pageIndex + 1) * PAGE_SIZE
-            )
-          )
-        }, 500)
+        return res.json(
+          JSON.parse(data)
+        )
       }
       const dataGenerated = new Array(100).fill(null).map(getFakeUser);
       return fs.writeFile(
         fileName,
         JSON.stringify(dataGenerated),
         () => {
-          setTimeout(() => {
-            return res.json(
-              dataGenerated.slice(
-                +pageIndex * PAGE_SIZE,
-                (+pageIndex + 1) * PAGE_SIZE
-              )
-            )
-          }, 500)
+          res.json(
+            dataGenerated
+          )
         }
       )
     }
   )
 })
+
+// const imgdata = [
+//   0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x01, 0x00, 0x01, 0x00, 0x80, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
+//   0x00, 0x00, 0x00, 0x21, 0xf9, 0x04, 0x04, 0x00, 0x00, 0x00, 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00,
+//   0x01, 0x00, 0x01, 0x00, 0x00, 0x02, 0x02, 0x44, 0x01, 0x00, 0x3b
+// ]
+// const imgbuf = Buffer.from(imgdata)
+// server.get('/tracker/:userId.gif', (req, res) => {
+//   const { userId } = req.params
+//   // <img src={`/tracker/${counter}.gif`} alt="tracker" />
+//   // '/tracker'
+//   const dataObj = {
+//     language: req.headers['accept-language'],
+//     userAgent: req.headers['user-agent'],
+//     date: +(new Date()),
+//     ipAddress: req.connection.remoteAddress,
+//     userId
+//   }
+//   const fileName = `${__dirname}/logs/${userId}_${dataObj.date}.json`;
+//   return fs.writeFile(
+//     fileName,
+//     JSON.stringify(dataObj),
+//     () => {
+//       res.writeHead(200, {
+//         'Content-Type': 'image/gif',
+//         'Content-Length': imgdata.length,
+//       })
+//       res.end(imgbuf)
+//     }
+//   )
+// })
+// server.get('/api/users/:pageIndex', (req, res) => {
+//   const { pageIndex } = req.params
+
+//   const fileName = `${__dirname}/tmp/data.json`;
+//   fs.readFile(
+//     fileName,
+//     (err, data) => {
+//       if (!err) {
+//         setTimeout(() => {
+//           return res.json(
+//             JSON.parse(data).slice(
+//               +pageIndex * PAGE_SIZE,
+//               (+pageIndex + 1) * PAGE_SIZE
+//             )
+//           )
+//         }, 500)
+//       }
+//       const dataGenerated = new Array(100).fill(null).map(getFakeUser);
+//       return fs.writeFile(
+//         fileName,
+//         JSON.stringify(dataGenerated),
+//         () => {
+//           setTimeout(() => {
+//             return res.json(
+//               dataGenerated.slice(
+//                 +pageIndex * PAGE_SIZE,
+//                 (+pageIndex + 1) * PAGE_SIZE
+//               )
+//             )
+//           }, 500)
+//         }
+//       )
+//     }
+//   )
+// })
 
 server.get('/', (req, res) => {
   // const body = renderToString(<Root />);
