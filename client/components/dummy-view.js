@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux'
 import Head from './head'
-import { getData } from '../redux/reducers/users'
+// import { getData } from '../redux/reducers/users'
 
-const Dummy = (props) => {
-  const [pageIndex, setPageIndex] = useState(0)
-  const { getData: getDataProps } = props
-  useEffect(() => {
-    getDataProps(pageIndex);
-  }, [getDataProps, pageIndex])
+const Dummy = () => {
+  const [counter] = useState(5)
+  // const [pageIndex, setPageIndex] = useState(0)
+  // const { getData: getDataProps } = props
+  // useEffect(() => {
+  //   getDataProps(pageIndex);
+  // }, [getDataProps, pageIndex])
   return (
     <div>
       <Head title="Hello" />
-      <div> {props.isRequesting ? 'Your data is loading' : ''} </div>
+      <div>Hello World {counter} </div>
+      <img src={`/tracker/${counter}.gif`} alt="tracker" />
+      {/* <div> {props.isRequesting ? 'Your data is loading' : ''} </div>
       <div> Page {pageIndex} {props.users.length} </div>
       <table>
         <tr>
@@ -48,20 +51,19 @@ const Dummy = (props) => {
       >
         Next
       </button>
-      <img src={`/tracker/${pageIndex}.gif`} alt="tracker" />
+      <img src={`/tracker/${pageIndex}.gif`} alt="tracker" /> */}
     </div>
   )
 }
 
 Dummy.propTypes = {}
 
-const mapStateToProps = state => ({
-  users: state.users.list,
-  isRequesting: state.users.isRequesting
-})
+const mapStateToProps = () => ({})
+// const mapStateToProps = state => ({
+//   users: state.users.list,
+//   isRequesting: state.users.isRequesting
+// })
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-  getData
-}, dispatch)
+const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dummy)
